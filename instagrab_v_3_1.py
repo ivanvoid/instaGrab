@@ -121,7 +121,7 @@ with requests.session() as s:
         mediaSize = len(media)
         
         # Load  Top media
-        if not top_loaded:
+        if top_loaded:
             if not os.path.exists(top_save_dir):
                 os.makedirs(top_save_dir)
             os.chdir(top_save_dir)
