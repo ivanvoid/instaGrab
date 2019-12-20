@@ -5,26 +5,7 @@ Created on Wed Dec 18 21:48:39 2019
 
 @author: veax-void
 """
-import requests, re, json
-import urllib.request
-import time
-import os
-
-# Variables
-page_prefex = 'https://www.instagram.com/p/'
-teg_prefex = 'https://www.instagram.com/explore/tags/'
-
-data_expr = r"(?<=<script type=\"text/javascript\">window\._sharedData = )(.*)(?=;</script>)"
-video_expr = r'<meta property="og:video" content="(.*)" />'
-
-lastpage = 10 # How many pages you want to download?
-
-top_save_dir = 'top_posts/'
-jst_save_dir = 'posts/'
-
-top_loaded = False # you wanto to download top posts?
-# Links
-
+# tags list
 tags = [ 'ahegao',
          'nekogirl',
          'catgirl',
@@ -34,11 +15,33 @@ tags = [ 'ahegao',
          'redlingerie',
          'senpai']
 
+# FLAGS
+lastpage = 10       # How many pages you want to download?
+top_loaded = True   # you wanto to download top posts?
+VID_DOW = False     # Download video?
+IMG_DOW = True      # Dwonload images?
+TAG_DOW = tags[0]   # What tag you want to download?
 
-link = teg_prefex + tags[5] + '/'
+top_save_dir = 'top_posts/'
+jst_save_dir = 'posts/'
 
 #==============================================================================
-# Functions
+import requests, re, json
+import urllib.request
+import time
+import os
+
+# Variables DON'T CHANGE
+page_prefex = 'https://www.instagram.com/p/'
+teg_prefex = 'https://www.instagram.com/explore/tags/'
+
+data_expr = r"(?<=<script type=\"text/javascript\">window\._sharedData = )(.*)(?=;</script>)"
+video_expr = r'<meta property="og:video" content="(.*)" />'
+
+# link to tag page
+link = teg_prefex + TAG_DOW + '/'
+
+# Functions ------------------------------------------------------------------
 def initRequest(req):
     hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -70,7 +73,7 @@ def graphSidecarLoader(media_info):
     content_list = page_j['entry_data']['PostPage'][0]['graphql']['shortcode_media']['edge_sidecar_to_children']['edges']
 
     for content_info in content_list:
-        if not content_info['node']['is_video']:
+        if (not content_info['node']['is_video'] and IMG_DOW):
             # IMG
             img_id  = content_info['node']['id']
             img_url = content_info['node']['display_url']
@@ -79,7 +82,7 @@ def graphSidecarLoader(media_info):
             print('Graph Sidecar Image:\t',content_info['node']['shortcode'])
 
             urllib.request.urlretrieve(img_url, str(img_name)+".jpg")
-        else:
+        elif VID_DOW:
             # VIDEO
             video_id        = content_info['node']['id']
             video_name = content_info['node']['shortcode']+'_'+video_id
@@ -130,7 +133,7 @@ with requests.session() as s:
                 if topmedia_info['node']['__typename'] == 'GraphSidecar':
                     print('TOP')
                     graphSidecarLoader(topmedia_info)
-                elif  topmedia_info['node']['__typename'] == 'GraphImage':
+                elif  (topmedia_info['node']['__typename'] == 'GraphImage' and IMG_DOW):
                     img_id  = topmedia_info['node']['id']
                     img_url = topmedia_info['node']['display_url']
                     img_name = topmedia_info['node']['shortcode']+'_'+img_id
@@ -138,7 +141,7 @@ with requests.session() as s:
                     print('Top Image:\t', topmedia_info['node']['shortcode'])
                     
                     urllib.request.urlretrieve(img_url, str(img_name)+".jpg")
-                elif  topmedia_info['node']['__typename'] == 'GraphVideo':
+                elif  (topmedia_info['node']['__typename'] == 'GraphVideo' and VID_DOW):
                     video_id  = topmedia_info['node']['id']
                     shortcode = topmedia_info['node']['shortcode'] 
                     video_name = shortcode+'_'+video_id
@@ -153,7 +156,7 @@ with requests.session() as s:
                     print('Type error')
                     
             os.chdir('..')
-            top_loaded = 1
+            top_loaded = False
         
         # Load just media
         if not os.path.exists(jst_save_dir):
@@ -163,7 +166,7 @@ with requests.session() as s:
         for media_info in media:
             if media_info['node']['__typename'] == 'GraphSidecar':
                 graphSidecarLoader(media_info)
-            elif  media_info['node']['__typename'] == 'GraphImage':
+            elif  (media_info['node']['__typename'] == 'GraphImage' and IMG_DOW):
                 img_id  = media_info['node']['id']
                 img_url = media_info['node']['display_url']
                 img_name = media_info['node']['shortcode']+'_'+img_id
@@ -171,7 +174,7 @@ with requests.session() as s:
                 print('Image:\t', media_info['node']['shortcode'])
                 
                 urllib.request.urlretrieve(img_url, str(img_name)+".jpg")
-            elif  media_info['node']['__typename'] == 'GraphVideo':
+            elif  (media_info['node']['__typename'] == 'GraphVideo' and VID_DOW):
                 video_id  = media_info['node']['id']
                 shortcode = media_info['node']['shortcode']
                 video_name = media_info['node']['shortcode']+'_'+img_id
@@ -186,19 +189,3 @@ with requests.session() as s:
                 print('Type error')
     
         os.chdir('..')
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
