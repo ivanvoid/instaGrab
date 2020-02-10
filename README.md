@@ -5,7 +5,7 @@ Interface:
 lastpage = 10       # How many pages you want to download?  
 top_loaded = True   # you wanto to download top posts?  
 VID_DOW = False     # Download video?  
-IMG_DOW = True      # Dwonload images?  
+IMG_DOW = True      # Download images?  
 TAG_DOW = 'cats'   # What tag you want to download?  
 
 top_save_dir = 'top_posts/' # Folder for top posts  
