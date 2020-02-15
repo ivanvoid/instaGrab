@@ -6,14 +6,9 @@ Created on Wed Dec 18 21:48:39 2019
 @author: veax-void
 """
 # tags list
-tags = [ 'ahegao',
-         'nekogirl',
-         'catgirl',
-         'schoolgirl',
-         'cosplaygirl',
-         'hentaygirls',
-         'redlingerie',
-         'senpai']
+tags = ['cat',
+        'dog',
+        'AI']
 
 # FLAGS
 lastpage = 10       # How many pages you want to download?
