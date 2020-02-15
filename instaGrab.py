@@ -6,9 +6,9 @@ Created on Wed Dec 18 21:48:39 2019
 @author: veax-void
 """
 # tags list
-tags = ['catgirl',
+tags = ['cats',
         'dogs',
-        'robots']
+        'robot']
 
 # FLAGS
 lastpage = 10       # How many pages you want to download?
@@ -81,7 +81,7 @@ def graphSidecarLoader(media_info):
             
             print('Graph Sidecar Image:\t',content_info['node']['shortcode'])
 
-            urllib.request.urlretrieve(img_url, str(img_name)+".png")
+            urllib.request.urlretrieve(img_url, str(img_name)+".jpg")
         elif VID_DOW:
             # VIDEO
             video_id        = content_info['node']['id']
@@ -136,7 +136,7 @@ with requests.session() as s:
                     
                     print('Top Image:\t', topmedia_info['node']['shortcode'])
                     
-                    urllib.request.urlretrieve(img_url, str(img_name)+".png")
+                    urllib.request.urlretrieve(img_url, str(img_name)+".jpg")
                 elif  (topmedia_info['node']['__typename'] == 'GraphVideo' and VID_DOW):
                     video_id  = topmedia_info['node']['id']
                     shortcode = topmedia_info['node']['shortcode'] 
@@ -169,7 +169,7 @@ with requests.session() as s:
                 
                 print('Image:\t', media_info['node']['shortcode'])
                 
-                urllib.request.urlretrieve(img_url, str(img_name)+".png")
+                urllib.request.urlretrieve(img_url, str(img_name)+".jpg")
             elif  (media_info['node']['__typename'] == 'GraphVideo' and VID_DOW):
                 video_id  = media_info['node']['id']
                 shortcode = media_info['node']['shortcode']
