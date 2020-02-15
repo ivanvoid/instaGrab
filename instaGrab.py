@@ -6,15 +6,15 @@ Created on Wed Dec 18 21:48:39 2019
 @author: veax-void
 """
 # tags list
-tags = ['cat',
-        'dog',
-        'AI']
+tags = ['cats',
+        'dogs',
+        'robots']
 
 # FLAGS
 lastpage = 10       # How many pages you want to download?
 top_loaded = True   # you wanto to download top posts?
-VID_DOW = False     # Download video?
-IMG_DOW = True      # Dwonload images?
+VID_DOW = True      # Download video?
+IMG_DOW = True      # Download images?
 TAG_DOW = tags[0]   # What tag you want to download?
 
 top_save_dir = 'top_posts/'
@@ -23,8 +23,13 @@ jst_save_dir = 'posts/'
 #==============================================================================
 import requests, re, json
 import urllib.request
+import pathlib
 import time
 import os
+
+os.chdir(pathlib.Path(__file__).parent.absolute()) # Chdir were this file is
+os.mkdir(TAG_DOW)
+os.chdir(TAG_DOW)
 
 # Variables DON'T CHANGE
 page_prefex = 'https://www.instagram.com/p/'
@@ -85,10 +90,6 @@ def graphSidecarLoader(media_info):
             page_vidio_url  = page_prefex + code
             
             print('Graph Sidecar Video:\t',content_info['node']['shortcode'])
-            
-#            r1 = s.get(page_vidio_url)
-            
-#            video_url = re.search(video_expr, r1.text).group(1)
             
             video_url = content_info['node']['video_url']
 
